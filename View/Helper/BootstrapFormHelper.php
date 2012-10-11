@@ -287,7 +287,7 @@ class BootstrapFormHelper extends FormHelper {
 				$out['error'] = $errMsg;
 			}
 		}
-		
+
 		if ($type != 'hidden') {
 			if (isset($options['help-inline'])) {
 				$input .= $this->Html->tag('span', $options['help-inline'], array('class' => 'help-inline'));
@@ -354,6 +354,39 @@ class BootstrapFormHelper extends FormHelper {
 	public function submit($caption = null, $options = array()) {
 		$options = $this->BootstrapInfo->button($options);
 		return parent::submit($caption, $options);
+	}
+
+	/**
+	* input_addon
+	*
+	* @param string $fieldName
+	* @param array $input
+	* @param array $options
+	* @return string
+	*/
+	public function inputAddon($fieldName, $input = array(), $options = array()) {
+
+		$options['type'] = 'text'; // input type
+		$setPrepend = isset($input['input-prepend']);
+		$setAppend  = isset($input['input-append']);
+
+		/* Return as normal input if nothing set */
+		if (!$setPrepend && !$setAppend) {
+			return $this->basic_input($fieldName, $options);
+		}
+
+		if ($setPrepend && $setAppend) {
+			$conPrepend = $this->Html->tag('span', $input['input-prepend'], array('class' => 'input-prepend'));
+			$conAppend	= $this->Html->tag('span', $input['input-append'], array('class' => 'input-append'));
+			return $this->Html->tag('div', $conPrepend.$this->basic_input($fieldName, $options).$conAppend, array('class' => 'input-prepend input-append'));
+		} elseif ($setPrepend && !$setAppend) {
+			$conPrepend = $this->Html->tag('span', $input['input-prepend'], array('class' => 'input-prepend'));
+			return $this->Html->tag('div', $conPrepend.$this->basic_input($fieldName, $options), array('class' => 'input-prepend'));
+		} else {
+			$conAppend	= $this->Html->tag('span', $input['input-append'], array('class' => 'input-append'));
+			return $this->Html->tag('div', $this->basic_input($fieldName, $options).$conAppend, array('class' => 'input-prepend'));
+		}
+
 	}
 
 }
